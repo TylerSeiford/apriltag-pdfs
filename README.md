@@ -1,13 +1,13 @@
 # AprilTag PDFs
 
-This repository contains pre-generated PDFs of [AprilTag 3][apriltags] tags. Currently available tags are from the `tag36h11` family, in sizes of 100mm and 200mm, in US Letter and A4 paper sizes.
+This repository contains pre-generated PDFs of [AprilTag 3][apriltags] tags. Currently available tags are from the `tag36h11` and `tag16h5` families, in sizes of 100mm, 200mm, and 8in, in US Letter and A4 paper sizes.
 
   [apriltags]: https://github.com/AprilRobotics/apriltag
 
 
 ## Generation
 
-The tags were converted from PNG source files from the [apriltag-imgs][] repository using [ImageMagick][]. Thanks to @cbteeple for initially developing the technique.
+The tags were converted from PNG source files from the [apriltag-imgs][] repository using ImageMagick. Thanks to @cbteeple for initially developing the technique.
 
   [apriltag-imgs]: https://github.com/AprilRobotics/apriltag-imgs
   [ImageMagick]: https://imagemagick.org/
@@ -27,3 +27,18 @@ The following command creates 300dpi, 8.5 x 11in (US Letter) PDF. The 10-pixel w
         tag.pdf
 
 For A4-sized PDFs, a density of 120 dots per cm is used.
+
+The following script was used to generate 8 inch 16h5 tags:
+```
+for id in {00000..00029};
+do
+    convert ../apriltag-imgs/tag16h5/tag16_05_$id.png \
+        -density 300 \
+        -scale $((100 * 300 / 10 * 8))% \
+        -bordercolor black -border 1 \
+        -gravity center -extent $((300*17/2))x$((300*11)) \
+        -gravity south -annotate +0+$((300/4)) "AprilTag family = tag16h5, size = 8 in, id = $id" \
+        tag15h6/us_letter/8in/tag16h5_8in_id$id.pdf
+done
+convert -density 300 $(ls -rt tag15h6/us_letter/8in/tag16h5_8in_id*.pdf) tag15h6/us_letter/8in/tag16h5_8in.pdf
+```
